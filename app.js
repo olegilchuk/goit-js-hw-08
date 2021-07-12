@@ -64,16 +64,16 @@ const galleryItems = [
   },
 ];
 
-console.log(galleryItems);
-console.log(galleryItemsImg(galleryItems));
-const galleryEl = document.querySelector(".js-gallery");
-const galleryMarkup = galleryItemsImg(galleryItems);
-galleryEl.insertAdjacentHTML("beforeend", galleryMarkup);
+const refs = {
+  galleryEl: document.querySelector(".js-gallery"),
+  modelLightbox: document.querySelector(".js-lightbox"),
+  modelImg: document.querySelector(".lightbox__image"),
+  btnCloseModel: document.querySelector("[data-action=close-lightbox]"),
+};
 
-function galleryItemsImg(galleryItems) {
-  return galleryItems
-    .map(({ preview, original, description }) => {
-      return `
+const galleryMarkup = galleryItems
+  .map(({ preview, original, description }) => {
+    return `
         <li class="gallery__item">
           <a
             class="gallery__link"
@@ -87,31 +87,30 @@ function galleryItemsImg(galleryItems) {
           </a>
         </li>
       `;
-    })
-    .join("");
-}
+  })
+  .join("");
+refs.galleryEl.insertAdjacentHTML("beforeend", galleryMarkup);
 
-galleryEl.addEventListener("click", onGalleryElClick);
-
-function onGalleryElClick(e) {
-  const isImgSwatchEl = e.target.classList.contains("gallery__item");
+function onModelOpenClick(e) {
   e.preventDefault();
-  if (!isImgSwatchEl) {
+  const isImgSwatchEl = e.target;
+  if (isImgSwatchEl.nodeName !== "IMG") {
     return;
   }
-  imgModalIsOpen();
-}
-const imgModalConteiner = document.querySelector(".js-lightbox");
-
-function imgModalIsOpen() {
-  imgModalConteiner.classList.add("is-open");
+  refs.modelLightbox.classList.add("is-open");
+  refs.modelImg.src = isImgSwatchEl.dataset.source;
+  refs.modelImg.alt = isImgSwatchEl.alt;
 }
 
-const modelWindowClosed = document.querySelector(".lightbox-button");
-
-modelWindowClosed.addEventListener("click", imgModalClosed);
-
-function imgModalClosed() {
-  imgModalClosed.classList.remove("is-open");
+function onModelClosedClick(e) {
+  const isImgSwatchEl = e.target;
+  if (isImgSwatchEl.nodeName === "IMG") {
+    return;
+  }
+  refs.modelLightbox.classList.remove("is-open");
+  refs.modelImg.src = "#";
+  refs.modelImg.alt = "#";
 }
-// .classList.contains("gallery__item");
+
+refs.galleryEl.addEventListener("click", onModelOpenClick);
+refs.modelLightbox.addEventListener("click", onModelClosedClick);
