@@ -77,7 +77,7 @@ function galleryItemsImg(galleryItems) {
         <li class="gallery__item">
           <a
             class="gallery__link"
-            href="${original}">
+            href="${original}" >
             <img
               class="gallery__image"
               src="${preview}"
@@ -95,8 +95,23 @@ galleryEl.addEventListener("click", onGalleryElClick);
 
 function onGalleryElClick(e) {
   const isImgSwatchEl = e.target.classList.contains("gallery__item");
+  e.preventDefault();
   if (!isImgSwatchEl) {
     return;
   }
-  console.log(e.target);
+  imgModalIsOpen();
 }
+const imgModalConteiner = document.querySelector(".js-lightbox");
+
+function imgModalIsOpen() {
+  imgModalConteiner.classList.add("is-open");
+}
+
+const modelWindowClosed = document.querySelector(".lightbox-button");
+
+modelWindowClosed.addEventListener("click", imgModalClosed);
+
+function imgModalClosed() {
+  imgModalClosed.classList.remove("is-open");
+}
+// .classList.contains("gallery__item");
